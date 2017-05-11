@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<jnlp spec="1.0+" codebase="http://ties-vm/openslide/">
+	<information> 
+		<title>SlideViewer</title> 
+		<vendor>Department of Biomedical Informatics</vendor> 
+		<description>Virtual Slide Viewer</description> 
+		<description kind="short">SlideViewer</description> 
+		<offline-allowed/>
+	</information>
+	 <security>
+        <all-permissions/>
+    </security>
+	<resources>
+		<j2se version="1.4+" max-heap-size="256m"/>
+		<jar href="lib/SlideViewer.jar"/>
+	</resources>
+	<application-desc main-class="SlideViewer">
+		<argument>http://ties-vm/openslide/SlideViewer.conf</argument> 
+	</application-desc>
+</jnlp> 

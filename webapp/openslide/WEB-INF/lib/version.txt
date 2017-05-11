@@ -1,0 +1,2 @@
+openslide: 3.2.5
+openslidejava : 0.10

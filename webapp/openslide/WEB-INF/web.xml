@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE web-app  PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN" "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+
+<web-app>
+
+    <!-- Name and description -->
+    <display-name>OpenSlide Server</display-name>
+    <description>Digital Whole Slide Image Server</description>
+    
+
+    <servlet>
+        <servlet-name>OpenSlideServer</servlet-name>
+        <servlet-class>
+        	edu.pitt.dbmi.slideserver.OpenSlideServer
+        </servlet-class>
+	<init-param>
+		<param-name>image.dir</param-name>
+		<param-value>/opt/ties/slideimages</param-value>
+	</init-param>
+	<init-param>
+		<param-name>suppress.labels</param-name>
+		<param-value>true</param-value>
+	</init-param>
+    </servlet>
+
+    <servlet>
+        <servlet-name>ViewServlet</servlet-name>
+        <servlet-class>
+                edu.pitt.dbmi.slideserver.ViewServlet
+        </servlet-class>
+        <init-param>
+                <param-name>config.path</param-name>
+                <param-value>http://ties-vm/openslide/SlideViewer.conf</param-value>
+        </init-param>
+    </servlet>
+
+    <!-- Servlet mappings
+
+	    Includes redundant mappings with wildcard pattern. This really shouldn't
+	    be necessary, but at least one app server (Tomcat) needs it to
+	    invoke the servlet without URL hackery.
+    -->
+
+
+
+    <servlet-mapping>
+        <servlet-name>OpenSlideServer</servlet-name>
+        <url-pattern>/OpenSlideServlet</url-pattern>
+    </servlet-mapping>
+	
+    <servlet-mapping>
+        <servlet-name>OpenSlideServer</servlet-name>
+        <url-pattern>/OpenSlideServer</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>OpenSlideServer</servlet-name>
+        <url-pattern>/server</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>OpenSlideServer</servlet-name>
+        <url-pattern>/Server</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>OpenSlideServer</servlet-name>
+        <url-pattern>/list</url-pattern>
+    </servlet-mapping>
+    
+
+    <servlet-mapping>
+        <servlet-name>ViewServlet</servlet-name>
+         <url-pattern>/View</url-pattern>
+    </servlet-mapping>
+
+   <servlet-mapping>
+        <servlet-name>ViewServlet</servlet-name>
+         <url-pattern>/view</url-pattern>
+    </servlet-mapping>
+    
+
+    <!-- Welcome file(s) -->
+    <welcome-file-list>
+	<welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+</web-app>
+<!-- EOF -->
+

@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+
+<!-- Written to assume that classpath is rooted in the current directory. -->
+<!-- So this should be OK if you make this script in the root of a filesystem. -->
+<!-- If not, you may prefer to adjust the basedir, or move some directories around. -->
+<!-- The idea is that both Ant and NetBeans have to know what the package root is -->
+<!-- for the classes in your application. -->
+<project name="OpenSlide" basedir="." default="all">
+
+    <!-- Don't worry if you don't know the Ant syntax completely or need help on some tasks! -->
+    <!-- The standard Ant documentation is bundled. See Help | Shortcuts | Ant 1.3 Documentation. -->
+    <property environment="env"/>
+	<property name="os" value="windows"/>
+			
+	<!-- directory locations -->
+	<property name="lib.dir" value="lib"/>
+	<property name="src.dir" value="src/main/java"/>
+	<property name="resource.dir" value="src/main/resources/resources"/>
+	<property name="web.dir" value="webapp/viewer"/>
+	<property name="build.dir" value="build"/>
+	<property name="build.classes" value="${build.dir}/classes"/>  
+	<property name="build.lib" value="${build.dir}/jars"/>
+	<property name="build.war" value="${build.dir}/wars"/>
+	
+	<!-- reqired jar files -->
+	 <property name="openslide"  value="${lib.dir}/linux/openslide.jar"/> 
+	<property name="imagej"    value="${lib.dir}/ij.jar"/>
+	<property name="servlet"    value="${lib.dir}/servlet-2_3.jar"/>
+	<property name="viewer"    value="${lib.dir}/SlideViewer.jar"/>
+	<property name="web.xml"    value="webapp/viewer/WEB-INF/web.xml"/>
+		
+	
+	<!-- jar file names -->
+	<path id="server.path">
+		<pathelement location="${openslide}"/>
+		<pathelement location="${imagej}"/>
+		<pathelement location="${servlet}"/>
+	</path> 
+	<path id="client.path">
+		<pathelement location="${openslide}"/>
+		<pathelement location="${viewer}"/>
+	</path> 
+ 
+    <target name="makedirs">
+    	<mkdir dir="${build.dir}"/>
+    	<mkdir dir="${build.classes}"/>
+		<mkdir dir="${build.lib}"/>
+    </target>
+
+	
+	<!-- ===========< CLIENT >=========== -->
+	
+    <target name="compile_OpenSlideServer" depends="makedirs">
+        <javac srcdir="${src.dir}" destdir="${build.classes}" debug="true" 
+        	   deprecation="true" classpathref="server.path" target="1.5">
+        	 <include name="**/slideserver/**"/>
+        	 <exclude name="**/viewer/**"/>
+        </javac>
+    </target>
+    
+    <target name="compile_OpenSlideViewer" depends="makedirs">
+        <javac srcdir="${src.dir}" destdir="${build.classes}" debug="true" 
+        	   deprecation="true" classpathref="client.path" target="1.5" >
+        	<exclude name="**/slideserver/**"/>
+        </javac>
+    </target>
+	
+	<target name="jar_OpenSlideServer" depends="compile_OpenSlideServer" description="Build OpenSlide Servlet">  
+		<!-- copy resources -->
+		<delete failonerror="false">
+	    	<fileset dir="${build.classes}/${resource.dir}" includes="*.*"/>
+	    </delete>
+		<copy todir="${build.classes}/${resource.dir}">
+			<fileset dir="${resource.dir}" includes="*.*"/>
+		</copy>	
+		<!-- make jar file -->
+		<jar jarfile="${build.lib}/OpenSlideServlet.jar" basedir="${build.classes}">
+			 <include name="**/slideserver/**"/> 
+			 <include name="**/resources/*"/>
+			 <exclude name="**/test/**"/>
+        </jar>
+	</target>
+	
+	
+	<target name="jar_OpenSlideViewer" depends="compile_OpenSlideViewer" description="Build Local OpenSlideViewer">  
+			<!-- copy resources -->
+			<delete failonerror="false">
+		    	<fileset dir="${build.classes}/${resource.dir}" includes="*.*"/>
+		    </delete>
+			<copy todir="${build.classes}/${resource.dir}">
+				<fileset dir="${resource.dir}" includes="*.*"/>
+			</copy>	
+			<!-- extract viewer -->
+		 	<unjar src="${viewer}" dest="${build.classes}"/>
+			<unjar src="${openslide}" dest="${build.classes}"/>
+			<!-- make jar file -->
+			<jar jarfile="${build.lib}/OpenSlideViewer.jar" basedir="${build.classes}">
+				<manifest>
+					<attribute name="Main-Class" value="edu.pitt.dbmi.viewer.OpenSlideViewer"/>
+				 </manifest>
+				 <include name="**/slideviewer/**"/> 
+				 <include name="**/viewer/**"/> 
+				 <include name="**/openslide/**"/> 
+				 <include name="**/resources/*"/>
+				 <include name="**/icons/**"/>
+	        </jar>
+		</target>
+	
+	<target name="webapp">
+		<war destfile="${build.war}/viewer.war" webxml="web.xml">
+		  <fileset dir="web.dir"/>
+		</war>
+	</target>
+	
+    <target name="clean" depends="">
+        <delete dir="${build.classes}"/>
+    </target>
+    
+    <target name="all" depends="jar_OpenSlideServer" description="Build, Move everything.">
+        <echo message="Application built. No Problems!"/>
+    </target>
+
+</project>

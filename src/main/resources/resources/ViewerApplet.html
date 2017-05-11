@@ -1,0 +1,37 @@
+<HTML> 
+<HEAD> 
+<TITLE>View [IMAGE_PATH]</TITLE> 
+</HEAD> 
+<BODY onResize="resize()" onLoad="resize()" topmargin="0" leftmargin="0" marginwidth="0" marginheight="0"> 
+<SCRIPT LANGUAGE="JavaScript"> 
+	function resize() { 
+		var w_newWidth,w_newHeight; 
+		var w_maxWidth=1600, w_maxHeight=1200; 
+		if (navigator.appName.indexOf("Microsoft") != -1) { 
+			w_newWidth=document.body.clientWidth; 
+			w_newHeight=document.body.clientHeight; 
+		} else { 
+			var netscapeScrollWidth=0; 
+			w_newWidth=window.innerWidth-netscapeScrollWidth; 
+			w_newHeight=window.innerHeight-netscapeScrollWidth; 
+		} 
+		//if (w_newWidth>w_maxWidth) 
+		//	w_newWidth=w_maxWidth; 
+		//if (w_newHeight>w_maxHeight) 
+		//	w_newHeight=w_maxHeight; 
+		//document.viewApplet.setSize(w_newWidth,w_newHeight); 
+		document.viewApplet.width = w_newWidth;
+		document.viewApplet.height = w_newHeight; 
+		window.scroll(0,0); 
+	} 
+	window.onResize = resize; 
+	window.onLoad = resize; 
+</SCRIPT> 
+<APPLET NAME="viewApplet" CODE="ViewerApplet" ARCHIVE="lib/SlideViewer.jar,lib/xippix.jar" WIDTH="100%" HEIGHT="100%">
+		<param name="config.url" value="CONFIG_PATH">
+		<param name="image.path" value="IMAGE_PATH">
+		<img src="View?Thumbnail=IMAGE_PATH"><br>
+		digital slide viewer requires <a href="http://java.com/">Java</a> 1.5 or higher to run
+</APPLET> 
+</BODY> 
+</HTML>
